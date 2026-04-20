@@ -1,0 +1,20 @@
+{
+  "$schema": "https://claude.ai/schema/settings.json",
+  "permissions": {
+    "allow": [
+      { "tool": "Bash" },
+      { "tool": "Read" },
+      { "tool": "Edit" },
+      { "tool": "WebFetch" }
+    ],
+    "deny": [
+      { "tool": "Read", "path": ".env" }
+    ]
+  },
+  "env": {
+    "PYTHONPATH": "."
+  },
+  "capabilities": {
+    "code_execution": true
+  }
+}

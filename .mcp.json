@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "npx",
+      "args": ["-y", "@a-bonus/google-docs-mcp"],
+      "env": {
+        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
+        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}"
+      }
+    },
+    "asana": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://asana.com"]
+    },
+    "exa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://exa.ai?api_key=${EXA_API_KEY}&tools=web_search_exa,web_search_advanced_exa,company_research_exa,people_search_exa,crawling_exa"
+      ]
+    },
+    "bland-ai-actions": {
+      "command": "npx",
+      "args": ["-y", "universal-bland-ai-mcp-server"],
+      "env": {
+        "BLAND_AI_API_KEY": "${BLAND_AI_API_KEY}"
+      }
+    }
+  }
+}
