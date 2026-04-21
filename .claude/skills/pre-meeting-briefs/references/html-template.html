@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Brief — {{COMPANY_NAME}} | {{MEETING_TIME}} SGT</title>
+<style>
+  :root {
+    --berry: #912F63;
+    --deep-plum: #3E3452;
+    --soft-pink: #C46985;
+    --muted-purple: #6D5479;
+    --lavender-grey: #A795AE;
+    --charcoal: #535254;
+    --mid-grey: #A2A0A0;
+    --bg: #F5F3F0;
+    --white: #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DIN Next W1G', Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--charcoal);
+    background: var(--bg);
+  }
+
+  /* ── White card wrapper ── */
+  .page {
+    max-width: 820px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(62,52,82,0.10);
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--deep-plum);
+    padding: 28px 40px 22px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  /* Logo — white pill on dark bg per brand guidelines */
+  .logo-container { display: flex; align-items: center; gap: 12px; }
+
+  .logo-wordmark-pill {
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 6px 13px 5px;
+    display: inline-flex;
+    align-items: baseline;
+    min-width: 70px;
+  }
+
+  .logo-wordmark-pill .bugle {
+    font-family: 'Miller Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: #912F63;
+    line-height: 1;
+  }
+
+  .logo-wordmark-pill .rock {
+    font-family: 'Miller Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: #3E3452;
+    line-height: 1;
+  }
+
+  .logo-icon { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+  .logo-icon .focused-on {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .logo-icon .icon-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-icon .umlaut { font-size: 13px; color: #fff; line-height: 1; }
+
+  .doc-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--lavender-grey);
+    margin-top: 5px;
+  }
+
+  .meeting-meta {
+    text-align: right;
+    font-size: 11px;
+    color: var(--lavender-grey);
+    line-height: 1.75;
+  }
+
+  .meeting-meta strong { color: #fff; font-size: 12px; }
+
+  /* Header divider */
+  .header-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    margin: 0 0 18px;
+  }
+
+  /* Person row */
+  .subject-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .avatar-placeholder {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--berry);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 17px;
+    font-family: Georgia, serif;
+    flex-shrink: 0;
+    border: 2px solid var(--soft-pink);
+    margin-top: 3px;
+  }
+
+  .subject-info h1 {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: #fff;
+    font-weight: normal;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+  }
+
+  .subject-info .role-line {
+    color: var(--lavender-grey);
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  .intro-badge {
+    display: inline-block;
+    background: rgba(145,47,99,0.3);
+    border: 1px solid var(--soft-pink);
+    color: var(--soft-pink);
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 7px;
+  }
+
+  /* Confidence badge in header */
+  .header-conf {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-top: 6px;
+    margin-left: 8px;
+  }
+
+  .header-conf.high { background: #2d6b28; color: #b6f0b0; }
+  .header-conf.medium { background: rgba(230,168,23,0.25); color: #f5c842; }
+  .header-conf.low { background: rgba(145,47,99,0.4); color: #f4a0c0; }
+
+  /* ── Body ── */
+  .body { padding: 30px 40px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 26px; }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--berry);
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--berry);
+    margin-bottom: 14px;
+  }
+
+  /* ── How we got here ── */
+  ul.bullet-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.bullet-list li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+    font-size: 13px;
+    border-bottom: 1px solid #f0ecea;
+  }
+
+  ul.bullet-list li:last-child { border-bottom: none; }
+
+  ul.bullet-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 13px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--berry);
+  }
+
+  /* ── Career grid ── */
+  .career-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .career-item {
+    background: var(--bg);
+    border-left: 3px solid var(--lavender-grey);
+    padding: 10px 14px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .career-item.current { border-left-color: var(--berry); }
+
+  .career-firm {
+    font-weight: bold;
+    color: var(--deep-plum);
+    font-size: 13px;
+  }
+
+  .career-title { color: var(--charcoal); font-size: 12px; margin-top: 1px; }
+  .career-period { color: var(--mid-grey); font-size: 11px; margin-top: 2px; }
+
+  .career-note {
+    color: var(--charcoal);
+    font-size: 11px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* Attendee links */
+  .attendee-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .attendee-link {
+    font-size: 11px;
+    color: var(--berry);
+    text-decoration: none;
+    border: 1px solid rgba(145,47,99,0.3);
+    padding: 2px 10px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ── Angle highlight box ── */
+  .angle-box {
+    background: linear-gradient(135deg, #fdf6fa 0%, #f5f0f8 100%);
+    border: 1px solid var(--soft-pink);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+
+  .angle-headline {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--deep-plum);
+    margin-bottom: 8px;
+  }
+
+  .angle-tags { margin-bottom: 10px; }
+
+  .angle-tag {
+    display: inline-block;
+    background: var(--berry);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Company kv table ── */
+  .kv { width: 100%; border-collapse: collapse; }
+
+  .kv td {
+    padding: 5px 0;
+    vertical-align: top;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(167,149,174,0.15);
+  }
+
+  .kv td:first-child {
+    font-weight: 700;
+    color: var(--deep-plum);
+    width: 26%;
+    padding-right: 12px;
+  }
+
+  .kv tr:last-child td { border-bottom: none; }
+
+  .kv a { color: var(--berry); text-decoration: none; }
+
+  /* ── Talking points ── */
+  .tp-item {
+    display: flex;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f0ecea;
+    align-items: flex-start;
+  }
+
+  .tp-item:last-child { border-bottom: none; }
+
+  .tp-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--berry);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tp-text strong {
+    color: var(--deep-plum);
+    display: block;
+    margin-bottom: 3px;
+    font-size: 13px;
+  }
+
+  .tp-text { font-size: 13px; line-height: 1.65; }
+
+  .tp-suggest {
+    margin-top: 5px;
+    font-size: 12px;
+    color: var(--muted-purple);
+    font-style: italic;
+    padding-left: 12px;
+    border-left: 2px solid var(--lavender-grey);
+  }
+
+  /* ── Watch-outs ── */
+  .watch-box {
+    background: #fff9f0;
+    border-left: 4px solid #e6a020;
+    padding: 12px 16px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .watch-box ul.bullet-list li::before { background: #e6a020; }
+
+  /* ── Open tasks ── */
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    background: var(--bg);
+    border: 1px solid rgba(167,149,174,0.3);
+    font-size: 12px;
+  }
+
+  .task.overdue { background: rgba(145,47,99,0.05); border-color: rgba(145,47,99,0.3); }
+  .task-status { font-size: 11px; font-weight: 700; min-width: 72px; color: var(--mid-grey); }
+  .task.overdue .task-status { color: var(--berry); }
+  .task-name { flex: 1; }
+  .task-meta { font-size: 11px; color: var(--mid-grey); }
+
+  /* ── Outcome ── */
+  .outcome-box {
+    background: linear-gradient(135deg, #f5f0f8 0%, #ede8f5 100%);
+    border-left: 4px solid var(--deep-plum);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .outcome-box p { font-size: 13px; color: var(--deep-plum); line-height: 1.7; }
+
+  /* ── Deal map ── */
+  .deal-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .deal-badge.active { background: rgba(145,47,99,0.12); color: var(--berry); }
+  .deal-badge.potential { background: rgba(109,84,121,0.12); color: var(--muted-purple); }
+  .deal-badge.none { background: rgba(162,160,160,0.15); color: var(--mid-grey); }
+
+  /* ── Tracxn Snapshot Panel ── */
+  .tracxn-panel {
+    margin: 12px 0 18px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(62,52,82,0.2);
+  }
+
+  .tracxn-header {
+    background: var(--deep-plum);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .tracxn-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--soft-pink);
+    background: rgba(196,105,133,0.2);
+    padding: 2px 7px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+
+  .tracxn-company-name {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .tracxn-header-right {
+    text-align: right;
+    font-size: 11px;
+    color: var(--lavender-grey);
+    line-height: 1.8;
+  }
+
+  .tracxn-attendee-badge {
+    background: var(--berry);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 5px;
+  }
+
+  .tracxn-metrics {
+    background: #fff;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 1px solid rgba(62,52,82,0.12);
+  }
+
+  .tracxn-metric {
+    padding: 13px 15px;
+    border-right: 1px solid rgba(62,52,82,0.1);
+  }
+
+  .tracxn-metric:last-child { border-right: none; }
+
+  .tracxn-metric-value {
+    font-family: Georgia, serif;
+    font-size: 19px;
+    color: var(--berry);
+    line-height: 1.1;
+    margin-bottom: 3px;
+  }
+
+  .tracxn-metric-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mid-grey);
+    margin-bottom: 2px;
+  }
+
+  .tracxn-metric-sub { font-size: 10px; color: var(--muted-purple); font-weight: 600; }
+
+  .tracxn-source {
+    background: rgba(62,52,82,0.04);
+    padding: 5px 16px;
+    font-size: 10px;
+    color: var(--mid-grey);
+    font-style: italic;
+    border-top: 1px solid rgba(62,52,82,0.08);
+  }
+
+  /* ── Brief Confidence section ── */
+  .confidence-section {
+    border-left: 3px solid var(--mid-grey);
+    background: rgba(162,160,160,0.04);
+    padding: 14px 16px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 26px;
+  }
+
+  .confidence-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+
+  .conf-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; }
+  .conf-badge.high { background: #edf6ec; color: #3a7a35; }
+  .conf-badge.medium { background: rgba(230,168,23,0.12); color: #8a5e00; }
+  .conf-badge.low { background: rgba(145,47,99,0.08); color: var(--berry); }
+
+  .conf-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+  .conf-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid-grey); padding: 4px 6px 4px 0; border-bottom: 1px solid rgba(162,160,160,0.3); }
+  .conf-table td { padding: 4px 6px 4px 0; border-bottom: 1px solid rgba(162,160,160,0.12); vertical-align: top; }
+  .conf-table tr:last-child td { border-bottom: none; }
+
+  .st-v { color: #3a7a35; font-weight: 600; }
+  .st-u { color: #185FA5; font-weight: 600; }
+  .st-i { color: #8a5e00; font-weight: 600; }
+  .st-g { color: var(--berry); font-weight: 600; }
+
+  .conf-list { margin: 5px 0 0 14px; font-size: 12px; line-height: 1.8; }
+  .conf-list.gaps li { color: var(--berry); }
+
+  /* ── Source note ── */
+  .source-note { font-size: 10px; color: var(--mid-grey); margin-top: 8px; font-style: italic; }
+
+  /* ── Footer ── */
+  .footer {
+    background: var(--bg);
+    border-top: 1px solid var(--lavender-grey);
+    padding: 12px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--mid-grey);
+  }
+
+  .footer .entity { color: var(--muted-purple); font-weight: bold; font-size: 11px; }
+
+  .confidential-tag {
+    background: var(--deep-plum);
+    color: #fff;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+
+  /* ── Logo pill in footer ── */
+  .footer .br-logo-pill { background: var(--deep-plum); border-radius: 4px; padding: 3px 9px; display: inline-flex; align-items: baseline; }
+  .footer .br-logo-pill .bugle { font-family: Georgia, serif; font-size: 11px; color: var(--soft-pink); }
+  .footer .br-logo-pill .rock { font-family: Georgia, serif; font-size: 11px; color: #fff; }
+
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; }
+    .header, .watch-box, .tracxn-panel { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ── HEADER ── -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="logo-container">
+        <div class="logo-wordmark-pill">
+          <span class="bugle">Bügle</span><span class="rock">Rock</span>
+        </div>
+        <div class="logo-icon">
+          <span class="focused-on">Focused on</span>
+          <div class="icon-circle"><span class="umlaut">ü</span></div>
+        </div>
+      </div>
+      <div class="doc-label">Pre-Meeting Brief · Confidential</div>
+    </div>
+    <div class="meeting-meta">
+      <strong>{{DATE_FORMATTED}}</strong><br>
+      {{MEETING_TIME}} SGT · {{DURATION_MINS}} mins<br>
+      {{MEETING_FORMAT}}<br>
+      {{ATTENDEE_EMAIL}}
+    </div>
+  </div>
+
+  <hr class="header-divider">
+
+  <div class="subject-row">
+    <div class="avatar-placeholder">{{AVATAR_INITIALS}}</div>
+    <div class="subject-info">
+      <h1>{{ATTENDEE_FULL_NAME}}</h1>
+      <div class="role-line">{{ATTENDEE_TITLE}} · {{ATTENDEE_COMPANY}} · {{ATTENDEE_LOCATION}}</div>
+      <!-- Intro badge: always show. Source: Gmail / Attio intro context -->
+      <span class="intro-badge">{{INTRO_SOURCE}} — {{INTRO_DATE}}</span>
+      <!-- Confidence badge -->
+      <span class="header-conf {{CONF_CLASS}}">{{CONF_LABEL}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── BODY ── -->
+<div class="body">
+
+  <!-- ══ HOW WE GOT HERE (always present — 3–4 bullets, source: Gmail + Attio) ══ -->
+  <div class="section">
+    <div class="section-title">How This Came Together</div>
+    <ul class="bullet-list">
+      {{INTRO_CONTEXT_BULLETS}}
+      <!-- Each bullet: one plain sentence. E.g.:
+        <li>Warm intro via [name] ([company]) on [date] — [context in half a sentence]</li>
+        <li>[Attendee] responded [time indicator] — meeting booked for [date/time]</li>
+        <li>No prior relationship / [N] prior touchpoints since [year]</li>
+      -->
+    </ul>
+  </div>
+
+  <!-- ══ THE ANGLE (dedicated section — only if angle is identified; skip if discovery mode) ══ -->
+  <!-- Remove entire section if no strong angle found -->
+  <div class="section">
+    <div class="section-title">{{ANGLE_SECTION_TITLE}}</div>
+    <!-- e.g. "The Platson AI Angle" / "The Timing Angle" / "The Mirror Angle" -->
+    <div class="angle-box">
+      <div class="angle-headline">{{ANGLE_HEADLINE}}</div>
+      <!-- Tags: only add if clearly applicable — funding stage, key signal, strategic label -->
+      <div class="angle-tags">
+        {{ANGLE_TAGS}}
+        <!-- Each tag: <span class="angle-tag">{{TAG_TEXT}}</span> -->
+      </div>
+      <ul class="bullet-list">
+        {{ANGLE_BULLETS}}
+        <!-- 3–5 bullets. Last bullet always: BugleRock angle — what this means for us -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ WHO ARE THEY (career grid — no prose arc) ══ -->
+  <div class="section">
+    <div class="section-title">Who They Are</div>
+    <div class="career-grid">
+      {{CAREER_CARDS}}
+      <!-- Each card: current roles get class="career-item current"
+        <div class="career-item current">
+          <div class="career-firm">{{FIRM}}</div>
+          <div class="career-title">{{TITLE}}</div>
+          <div class="career-period">{{PERIOD}} · {{LOCATION}}</div>
+          <div class="career-note">{{WHY_IT_MATTERS_FOR_THIS_MEETING}}</div>
+        </div>
+      -->
+      <!-- Education as final card (no "current" class, no career-note needed):
+        <div class="career-item">
+          <div class="career-firm">Education</div>
+          <div class="career-title">{{DEGREE}}</div>
+          <div class="career-period">{{INSTITUTION}}</div>
+        </div>
+      -->
+    </div>
+    <!-- LinkedIn links — personal profile + company page -->
+    <div class="attendee-links">
+      <a class="attendee-link" href="{{LINKEDIN_PERSONAL_URL}}" target="_blank">↗ LinkedIn (Personal)</a>
+      <a class="attendee-link" href="{{LINKEDIN_COMPANY_URL}}" target="_blank">↗ {{ATTENDEE_COMPANY}} on LinkedIn</a>
+      <a class="attendee-link" href="{{COMPANY_WEBSITE_URL}}" target="_blank">↗ {{ATTENDEE_COMPANY}} Website</a>
+    </div>
+    <p class="source-note">Sources: LinkedIn · Web search · {{S1_SOURCES_EXTRA}}</p>
+  </div>
+
+  <!-- ══ THE COMPANY ══ -->
+  <div class="section">
+    <div class="section-title">The Company</div>
+
+    <!-- TRACXN SNAPSHOT PANEL — include ONLY when Tracxn report found in Drive -->
+    <!-- Remove this entire .tracxn-panel block if no report available -->
+    <div class="tracxn-panel">
+      <div class="tracxn-header">
+        <div>
+          <div class="tracxn-label">Target Company</div>
+          <div class="tracxn-company-name">{{TRX_COMPANY_NAME}}</div>
+        </div>
+        <div class="tracxn-header-right">
+          {{TRX_LOCATION}} · {{TRX_STATUS}} · {{TRX_ENTITY_TYPE}}<br>
+          CIN: {{TRX_CIN}} · Inc. {{TRX_INC_YEAR}}<br>
+          <span class="tracxn-attendee-badge">{{ATTENDEE_FULL_NAME}} ({{ATTENDEE_TITLE}})</span>
+        </div>
+      </div>
+      <div class="tracxn-metrics">
+        <div class="tracxn-metric">
+          <div class="tracxn-metric-value">{{TRX_REVENUE}}</div>
+          <div class="tracxn-metric-label">{{TRX_REVENUE_FY}} Revenue</div>
+          <div class="tracxn-metric-sub">{{TRX_REVENUE_YOY}} YoY</div>
+        </div>
+        <div class="tracxn-metric">
+          <div class="tracxn-metric-value">{{TRX_EBITDA}}</div>
+          <div class="tracxn-metric-label">EBITDA</div>
+          <div class="tracxn-metric-sub">{{TRX_EBITDA_MARGIN}} Margin</div>
+        </div>
+        <div class="tracxn-metric">
+          <div class="tracxn-metric-value">{{TRX_PAT}}</div>
+          <div class="tracxn-metric-label">PAT {{TRX_REVENUE_FY}}</div>
+          <div class="tracxn-metric-sub">{{TRX_PAT_MARGIN}} Net Margin</div>
+        </div>
+        <div class="tracxn-metric">
+          <div class="tracxn-metric-value">{{TRX_REV_CAGR}}</div>
+          <div class="tracxn-metric-label">{{TRX_CAGR_PERIOD}} Rev CAGR</div>
+          <div class="tracxn-metric-sub">&nbsp;</div>
+        </div>
+        <div class="tracxn-metric">
+          <div class="tracxn-metric-value">{{TRX_CASH}}</div>
+          <div class="tracxn-metric-label">Cash on B/S</div>
+          <div class="tracxn-metric-sub">{{TRX_DEBT_NOTE}}</div>
+        </div>
+      </div>
+      <div class="tracxn-source">Tracxn · {{TRX_REPORT_DATE}} · All figures {{TRX_CURRENCY}}</div>
+    </div>
+    <!-- END TRACXN PANEL -->
+
+    <table class="kv">
+      <tr><td>What they do</td><td>{{S2_WHAT}}</td></tr>
+      <tr><td>Sector</td><td>{{S2_SECTOR}}</td></tr>
+      <tr><td>Stage / Scale</td><td>{{S2_STAGE}}</td></tr>
+      <tr><td>Key investors</td><td>{{S2_INVESTORS}}</td></tr>
+      <tr><td>Recent news</td><td>{{S2_NEWS}}</td></tr>
+    </table>
+
+    <!-- PE/VC/IB portfolio — include if applicable -->
+    {{S2_PORTFOLIO_BLOCK}}
+    <p class="source-note">Sources: {{S2_SOURCES}}</p>
+  </div>
+
+  <!-- ══ OUR HISTORY ══ -->
+  <div class="section">
+    <div class="section-title">Our History</div>
+    <!-- Stale relationship warning — include only if LAPSED + Stage 2+ -->
+    <!-- <div style="background:rgba(145,47,99,0.07);border-left:3px solid var(--berry);padding:8px 13px;margin-bottom:12px;font-size:12px;color:var(--berry);font-weight:600;">⚠️ DORMANT RELATIONSHIP — last contact {{DAYS_SINCE}} days ago. Acknowledge the gap before advancing the agenda.</div> -->
+    <table class="kv">
+      <tr><td>Attio stage</td><td>{{S3_ATTIO_STAGE}} · <span style="color:var(--muted-purple);font-weight:600;">{{S3_RECENCY}}</span></td></tr>
+      <tr><td>First contact</td><td>{{S3_FIRST_CONTACT}}</td></tr>
+      <tr><td>Warmth</td><td>{{S3_WARMTH}}</td></tr>
+      <tr><td>Documents</td><td>{{S3_DOCUMENTS}}</td></tr>
+    </table>
+    <!-- Timeline: only if there are 2+ meaningful touchpoints -->
+    {{S3_TIMELINE_BLOCK}}
+    <p class="source-note">Sources: Attio CRM · Gmail · Google Drive</p>
+  </div>
+
+  <!-- ══ OPEN COMMITMENTS ══ -->
+  <div class="section">
+    <div class="section-title">Open Commitments &amp; Tasks</div>
+    {{S4_TASKS}}
+    <!-- Each task:
+      <div class="task [overdue]">
+        <span class="task-status">[⚠️ OVERDUE / Open]</span>
+        <span class="task-name">{{TASK_NAME}}</span>
+        <span class="task-meta">Due {{DATE}} · {{ASSIGNEE}}</span>
+      </div>
+    -->
+    <!-- If none: -->
+    <!-- <p style="color:var(--mid-grey);font-style:italic;font-size:12px;">No open tasks linked to this company or attendee.</p> -->
+    <p class="source-note">Asana · Projects: {{S4_ASANA_PROJECTS}}</p>
+  </div>
+
+  <!-- ══ DEAL & OPPORTUNITY MAP ══ -->
+  <div class="section">
+    <div class="section-title">Deal &amp; Opportunity Map</div>
+    <table class="kv">
+      <tr><td>Pipeline match</td><td><span class="deal-badge {{S5_BADGE_CLASS}}">{{S5_BADGE_LABEL}}</span> · {{S5_ASANA_TASK}}</td></tr>
+      <tr><td>BRCS fit</td><td>{{S5_BRCS_STRATEGY}}</td></tr>
+      <tr><td>Deal potential</td><td>{{S5_DEAL_POTENTIAL}}</td></tr>
+      <tr><td>Relationship value</td><td>{{S5_REL_VALUE}}</td></tr>
+      <tr><td>Urgency</td><td>{{S5_URGENCY}}</td></tr>
+      <tr><td>Next step</td><td>{{S5_NEXT_STEP}}</td></tr>
+    </table>
+  </div>
+
+  <!-- ══ TALKING POINTS ══ -->
+  <div class="section">
+    <div class="section-title">Talking Points</div>
+    {{TALKING_POINTS}}
+    <!-- Each point:
+      <div class="tp-item">
+        <div class="tp-num">N</div>
+        <div class="tp-text">
+          <strong>{{LABEL}}</strong>
+          {{SUBSTANCE — 2–4 sentences of context and framing}}
+          <div class="tp-suggest">"{{SUGGESTED OPENING — actual words to use}}"</div>
+        </div>
+      </div>
+    -->
+  </div>
+
+  <!-- ══ WATCH-OUTS ══ -->
+  <div class="section">
+    <div class="section-title">Watch Out For</div>
+    <div class="watch-box">
+      <ul class="bullet-list">
+        {{WATCHOUT_BULLETS}}
+        <!-- Each bullet: specific, sourced. Tag inline: [Past conversation] / [Profile] / [Company situation] -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ DESIRED OUTCOME ══ -->
+  <div class="section">
+    <div class="section-title">Desired Outcome</div>
+    <div class="outcome-box">
+      <p>{{OUTCOME_PROSE}}</p>
+      <!-- Single flowing paragraph: "Leave this meeting with clarity on (1)... (2)... If X — then Y.
+           Fallback: [one line]. Success signal: [what good looks like in the room]." -->
+    </div>
+  </div>
+
+  <!-- ══ BRIEF CONFIDENCE ══ -->
+  <div class="confidence-section">
+    <div class="section-title" style="color:var(--charcoal);border-bottom-color:var(--mid-grey);">Brief Confidence</div>
+    <div class="confidence-header">
+      <span class="conf-badge {{CONF_CLASS}}">{{CONF_LABEL}}</span>
+      <span style="font-size:12px;color:var(--mid-grey);font-style:italic;">{{CONF_DESC}}</span>
+    </div>
+    <table class="conf-table">
+      <thead><tr><th>Dimension</th><th>Status</th><th>Note</th></tr></thead>
+      <tbody>{{CONF_SOURCE_ROWS}}</tbody>
+    </table>
+    <h3 style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-grey);margin:12px 0 4px;">Assumptions made</h3>
+    <ol class="conf-list">{{CONF_ASSUMPTIONS}}</ol>
+    <h3 style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-grey);margin:10px 0 4px;">Inferences in this brief</h3>
+    <ul class="conf-list">{{CONF_INFERENCES}}</ul>
+    <h3 style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mid-grey);margin:10px 0 4px;">Gaps</h3>
+    <ul class="conf-list gaps">{{CONF_GAPS}}</ul>
+  </div>
+
+</div><!-- /body -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <div>
+    <div class="entity">BugleRock Capital Pte. Ltd.</div>
+    30 Raffles Place, #07-01, BNI Tower, Singapore 048622 · CMS100978
+  </div>
+  <div class="confidential-tag">Confidential</div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
