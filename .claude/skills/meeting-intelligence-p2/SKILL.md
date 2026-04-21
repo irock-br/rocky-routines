@@ -98,7 +98,7 @@ Ask user: **"What number should I call? (include country code, e.g., +65XXXXXXXX
 
 Wait for phone number.
 
-Use **bland-ai-actions** MCP tool `send_call` with these parameters:
+once youe recieve the phone number ONLY THEN DO THE FOLLOWING STEPS:
 
 ```json
 {
@@ -121,6 +121,18 @@ After question 8, thank them warmly and confirm that the meeting snapshot will b
   "max_duration": 10,
   "record": true
 }
+```
+
+Use curl command given below to setup a call with these parameters:
+
+```bash
+curl -sf -X POST "https://api.bland.ai/v1/calls" \
+  -H "Authorization: $BLAND_AI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"phone_number":"$PHONE","task":"$json_given_above","model":"enhanced",
+  "language":"en","voice":"nat","max_duration":10,"record":true}'
+Poll: curl every 15s until status=completed (max 15 min).
+
 ```
 
 Tell user: **"Calling you now — pick up when ready. The call will take about 5 minutes."**
